@@ -55,8 +55,39 @@ st.markdown("""
 # Custom CSS for enhanced styling and mobile responsiveness
 st.markdown("""
 <style>
-    /* Mobile-first responsive design */
-    @media (max-width: 768px) {
+    /* Enhanced responsive design for all device modes including Android desktop mode */
+    
+    /* Small screens - always apply regardless of user agent (handles desktop mode on mobile) */
+    @media screen and (max-width: 480px) {
+        .main .block-container {
+            padding: 0.5rem !important;
+            max-width: 100% !important;
+        }
+        
+        .main-header {
+            font-size: 1.5rem !important;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 0.8rem !important;
+            margin-bottom: 1rem;
+        }
+        
+        /* Force single column layout on very small screens */
+        .css-ocqkz7, .css-1l02zno {
+            flex-direction: column !important;
+        }
+        
+        .css-ocqkz7 > div, .css-1l02zno > div {
+            width: 100% !important;
+            margin-bottom: 1rem;
+        }
+    }
+    
+    /* Medium mobile screens and Android desktop mode */
+    @media screen and (max-width: 768px) {
         .main .block-container {
             padding-top: 1rem;
             padding-bottom: 1rem;
@@ -197,30 +228,140 @@ st.markdown("""
         -webkit-text-size-adjust: 100%;
         -ms-text-size-adjust: 100%;
     }
+    
+    /* Special handling for Android Desktop Mode */
+    body.android-desktop-mode .main .block-container,
+    body.force-mobile-layout .main .block-container {
+        padding: 0.5rem !important;
+        max-width: 100% !important;
+    }
+    
+    body.android-desktop-mode .main-header,
+    body.force-mobile-layout .main-header {
+        font-size: 1.6rem !important;
+    }
+    
+    body.android-desktop-mode .subtitle,
+    body.force-mobile-layout .subtitle {
+        font-size: 0.9rem !important;
+    }
+    
+    /* Force mobile column behavior on small screens regardless of user agent */
+    body.android-desktop-mode .css-ocqkz7,
+    body.android-desktop-mode .css-1l02zno,
+    body.force-mobile-layout .css-ocqkz7,
+    body.force-mobile-layout .css-1l02zno {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+    
+    body.android-desktop-mode .css-ocqkz7 > div,
+    body.android-desktop-mode .css-1l02zno > div,
+    body.force-mobile-layout .css-ocqkz7 > div,
+    body.force-mobile-layout .css-1l02zno > div {
+        width: 100% !important;
+        margin-bottom: 0.5rem;
+        flex: none !important;
+    }
+    
+    /* Improve button sizing for Android desktop mode */
+    body.android-desktop-mode .stButton > button,
+    body.force-mobile-layout .stButton > button {
+        width: 100% !important;
+        font-size: 0.9rem !important;
+        padding: 0.7rem !important;
+        margin: 0.25rem 0 !important;
+    }
+    
+    /* Better sidebar handling */
+    body.android-desktop-mode .css-1d391kg,
+    body.force-mobile-layout .css-1d391kg {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+    
+    /* Optimize charts for small screens in desktop mode */
+    body.android-desktop-mode .js-plotly-plot,
+    body.force-mobile-layout .js-plotly-plot {
+        width: 100% !important;
+    }
+    
+    body.android-desktop-mode .plotly-graph-div,
+    body.force-mobile-layout .plotly-graph-div {
+        width: 100% !important;
+        height: auto !important;
+    }
 </style>
 
 <script>
-// Mobile detection and responsive adjustments
+// Enhanced mobile detection and Android desktop mode handling
 function isMobileDevice() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+function isAndroidDesktopMode() {
+    // Detect Android device in desktop mode (user agent contains desktop keywords but screen is small)
+    const ua = navigator.userAgent.toLowerCase();
+    const isAndroid = ua.indexOf('android') > -1;
+    const hasDesktopKeywords = ua.indexOf('chrome') > -1 && ua.indexOf('mobile') === -1;
+    const smallScreen = window.innerWidth <= 768 || window.screen.width <= 768;
+    
+    return isAndroid && hasDesktopKeywords && smallScreen;
 }
 
 function isTabletDevice() {
     return /iPad|Android/i.test(navigator.userAgent) && window.innerWidth > 768;
 }
 
-// Add mobile class to body for CSS targeting
-if (isMobileDevice()) {
-    document.body.classList.add('mobile-device');
+function getScreenCategory() {
+    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    
+    if (width <= 480) return 'xs-mobile';
+    if (width <= 768) return 'mobile';
+    if (width <= 1024) return 'tablet';
+    return 'desktop';
 }
 
-if (isTabletDevice()) {
-    document.body.classList.add('tablet-device');
+function applyResponsiveClasses() {
+    // Remove existing classes
+    document.body.classList.remove('mobile-device', 'tablet-device', 'android-desktop-mode', 'xs-mobile', 'small-screen');
+    
+    // Add appropriate classes
+    if (isMobileDevice()) {
+        document.body.classList.add('mobile-device');
+    }
+    
+    if (isAndroidDesktopMode()) {
+        document.body.classList.add('android-desktop-mode');
+        document.body.classList.add('small-screen');
+        console.log('Android Desktop Mode detected - applying mobile-friendly layout');
+    }
+    
+    if (isTabletDevice()) {
+        document.body.classList.add('tablet-device');
+    }
+    
+    // Add screen size classes
+    const category = getScreenCategory();
+    document.body.classList.add(category);
+    
+    // Force mobile layout for small screens regardless of user agent
+    if (window.innerWidth <= 768) {
+        document.body.classList.add('force-mobile-layout');
+    }
 }
 
-// Handle orientation changes
+// Initial application
+applyResponsiveClasses();
+
+// Handle window resize and orientation changes
+window.addEventListener('resize', function() {
+    applyResponsiveClasses();
+});
+
 window.addEventListener('orientationchange', function() {
     setTimeout(function() {
+        applyResponsiveClasses();
         window.scrollTo(0, 0);
     }, 100);
 });
@@ -378,21 +519,26 @@ def get_mobile_layout_updates(base_layout):
     """Update layout for mobile optimization."""
     mobile_updates = {
         'font': {'size': 10},
-        'margin': {'l': 40, 'r': 40, 't': 40, 'b': 40},
+        'margin': {'l': 30, 'r': 30, 't': 50, 'b': 40},
         'legend': {
             'orientation': 'h',
             'yanchor': 'bottom',
             'y': 1.02,
             'xanchor': 'right',
-            'x': 1
+            'x': 1,
+            'font': {'size': 9}
         },
         'xaxis': {
             'tickangle': -45,
-            'tickfont': {'size': 9}
+            'tickfont': {'size': 9},
+            'title': {'font': {'size': 10}}
         },
         'yaxis': {
-            'tickfont': {'size': 9}
-        }
+            'tickfont': {'size': 9},
+            'title': {'font': {'size': 10}}
+        },
+        'height': 400,  # Optimized height for mobile
+        'autosize': True
     }
     
     # Update base layout with mobile optimizations
@@ -404,6 +550,19 @@ def get_mobile_layout_updates(base_layout):
     
     return base_layout
 
+def get_android_desktop_config():
+    """Get configuration optimized for Android desktop mode."""
+    config = get_mobile_config()
+    # Additional optimizations for Android desktop mode
+    config.update({
+        'scrollZoom': True,
+        'doubleClick': 'reset+autosize',
+        'showTips': True,
+        'staticPlot': False,
+        'editable': False
+    })
+    return config
+
 # Dashboard Header
 st.markdown('<h1 class="main-header">Global Logistics Performance Dashboard</h1>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">Real-time Supply Chain Analytics & Risk Management | Worldwide Operations Overview</p>', unsafe_allow_html=True)
@@ -412,9 +571,23 @@ st.markdown('<p class="subtitle">Real-time Supply Chain Analytics & Risk Managem
 st.markdown("""
 <div style="background: linear-gradient(90deg, #4ECDC4, #44A08D); padding: 0.5rem; border-radius: 8px; margin: 1rem 0; text-align: center;">
     <p style="color: white; margin: 0; font-size: 0.9rem;">
-        📱 <strong>Mobile Optimized:</strong> This dashboard is fully responsive and optimized for Android, iOS, and desktop devices!
+        📱 <strong>Mobile Optimized:</strong> Fully responsive for Android, iOS, and desktop devices!<br>
+        🖥️ <strong>Android Desktop Mode:</strong> Automatically adapts when you switch to desktop view on mobile browsers
     </p>
 </div>
+
+<div id="android-desktop-notice" style="display: none; background: linear-gradient(90deg, #FF9800, #F57C00); padding: 0.5rem; border-radius: 8px; margin: 0.5rem 0; text-align: center;">
+    <p style="color: white; margin: 0; font-size: 0.85rem;">
+        🔄 <strong>Android Desktop Mode Detected:</strong> Layout optimized for your small screen in desktop view
+    </p>
+</div>
+
+<script>
+// Show Android desktop mode notice if detected
+if (typeof isAndroidDesktopMode === 'function' && isAndroidDesktopMode()) {
+    document.getElementById('android-desktop-notice').style.display = 'block';
+}
+</script>
 """, unsafe_allow_html=True)
 
 # Dashboard Statistics Overview - Responsive Layout
