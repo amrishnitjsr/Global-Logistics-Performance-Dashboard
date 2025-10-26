@@ -1,10 +1,18 @@
 ﻿# Global Logistics Performance Dashboard
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-url.streamlit.app)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://global-logistics-performance-dashboard-8itb2jxpnesfxcm5m2tvjh.streamlit.app/)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A comprehensive real-time analytics dashboard for supply chain logistics management, built with Streamlit and modern web technologies.
+
+## 🚀 **Live Demo - Try It Now!**
+
+> **🌟 [**CLICK HERE TO ACCESS THE LIVE DASHBOARD**](https://global-logistics-performance-dashboard-8itb2jxpnesfxcm5m2tvjh.streamlit.app/) 🌟**
+> 
+> **📊 Experience the full functionality of the Global Logistics Performance Dashboard**  
+> **💡 No installation required - runs directly in your browser**  
+> **🔗 Direct Link: https://global-logistics-performance-dashboard-8itb2jxpnesfxcm5m2tvjh.streamlit.app/**
 
 ##  Overview
 
@@ -231,7 +239,7 @@ We welcome contributions to improve the dashboard:
 - **Features**: Request enhancements through GitHub Issues
 
 ### Resources
-- **Live Demo**: View Dashboard (coming soon)
+- **Live Demo**: [🚀 **ACCESS LIVE DASHBOARD**](https://global-logistics-performance-dashboard-8itb2jxpnesfxcm5m2tvjh.streamlit.app/) - Try the dashboard now!
 - **Documentation**: Complete guides in project wiki
 - **Examples**: Sample datasets included in repository
 
